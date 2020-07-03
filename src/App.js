@@ -1,49 +1,42 @@
 import React, {useEffect, useState} from 'react';
-import mapboxgl from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
+import mapboxgl from 'mapbox-gl'; 
 import {Route} from "react-router-dom";
-import Diggy from "./Diggy";
+import Diggy from "./Member";
 import "./App.css";
+import Map from "./Diggy";
 
-let mapStyles = {
-  width: "50%",
-  height: "100vh"
-}
 
 let data = [{
   coordinates: [12.550343, 55.665957],
   name: "Diggy",
   },{
     coordinates: [12.70343, 55.665957],
-    name: "Du Waist"
+    name: "Lalala"
   }
 ]
 function App(props) {
-  debugger
-  let mapRef = React.createRef();
 
+  let mapRef = React.createRef();
+  let [map, setMap] = useState({})
+  let [coordinates, setCoordinates] = useState([12.550343, 55.665957]);
+
+  // useEffect(()=> {
+  //   navigator.geolocation.getCurrentPosition(location=> {
+  //     debugger
+  //     setCoordinates([location.coords.latitude, location.coords.longitude]);
+  //   })
+  // },[]);
+  
   useEffect(()=> {
-    mapboxgl.accessToken = 'pk.eyJ1IjoicGllcG9uZ3dvbmciLCJhIjoiY2tjMjUyaG8xMXp4bjMzbXhueDVscXR0cCJ9.Who2g0qEGkMLBmp8dgMhPQ';
+    mapboxgl.accessToken = process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN;
 
     var map = new mapboxgl.Map({
         container: mapRef.current,
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [12.550343, 55.665957],
+        center:[12.550343, 55.665957],
         zoom: 8
       });
-       
-
       
-      // var marker = new mapboxgl.Marker()
-      // .setLngLat([12.550343, 55.665957])
-      // .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-      // .setHTML('<h3>diggy</h3>'))
-      // .addTo(map);
-
-      map.on('click', "settlement-label", function(e) {
-        var features = map.queryRenderedFeatures(e.point);
-        debugger
-      })
-
       data.forEach((marker)=> {
         var el = document.createElement('div');
         el.className = 'marker';
@@ -53,8 +46,9 @@ function App(props) {
         '/)';
         el.style.width = 40 + 'px';
         el.style.height = 40 + 'px';
-        
+        debugger
         el.addEventListener('click', function() {
+          debugger
           props.history.push(`/${marker.name}`)
         });
    
@@ -62,13 +56,12 @@ function App(props) {
         .setLngLat(marker.coordinates)
         .addTo(map); 
       })
+  },[coordinates])
 
-
-  })
-
+  
   return (
     <div className="app">
-      <div style={mapStyles} ref={mapRef}/>
+      <Map {...props} ref={mapRef} />
       <Route path="/:id" component={Diggy}/>
     </div>
   );

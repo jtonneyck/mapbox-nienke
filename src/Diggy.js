@@ -1,12 +1,18 @@
-import React from 'react';
-import "./Diggy.css";
-function Diggy(props) {
-    debugger
-    return (
-        <div className="diggy">
-            <h1>{props.match.params.id}</h1>
-        </div>
-    )
+import React, {useEffect} from 'react';
+let mapStyles = {
+    width: "50%",
+    height: "100vh"
+  }
+
+class Map extends React.Component {
+
+    render(){
+        debugger
+        return (   
+            <div style={mapStyles} ref={this.props.innerRef} className="map"></div>
+        )
+    }
+
 }
 
-export default Diggy;
+export default React.forwardRef((props,ref)=> <Map innerRef={ref} {...props} />);
